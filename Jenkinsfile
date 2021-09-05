@@ -13,14 +13,13 @@ pipeline{
         stage("maven build"){
             steps{
                 sh "mvn clean package"
-                sh "mv target/*.war target/myweb.war"
             }
         }
         stage("deploy-dev"){
             steps{
                 sshagent(['docker']){
                 sh """
-                   scp -o StrictHostKeyChecking=no target/myweb.war root@192.168.1.148:/opt/tomcat8/webapps/
+                   scp var/lib/jenkins/workspace/test/webapp/target/webapp.war root@192.168.1.148:/opt/tomcat8/webapps/
                   
                    ssh root@192.168.1.148 /opt/tomcat8/bin/shutdown.sh
                   
