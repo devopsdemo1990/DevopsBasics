@@ -1,6 +1,9 @@
 currentBuild.displayName = "online-shopping-#"+currentBuild.number
 pipeline{
     agent any
+    environment{
+        M2_HOME=/opt/maven
+    }
     stages{
         stage("Git checkput"){
             steps{
