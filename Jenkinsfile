@@ -4,7 +4,7 @@ pipeline{
     stages{
         stage("Git checkput"){
             steps{
-                git credentialsId: 'github', url: 'http://'
+                git credentialsId: 'github', url: 'https://github.com/devopsdemo1990/DevopsBasics'
             }
         }
         stage("maven build"){
@@ -17,7 +17,7 @@ pipeline{
             steps{
                 sshagent(['docker']){
                 sh """
-                   scp -o StrictHostKeyChecking=no target/myweb,war root@192.168.1.148:/opt/tomcat8/webapps/
+                   scp -o StrictHostKeyChecking=no target/myweb.war root@192.168.1.148:/opt/tomcat8/webapps/
                   
                    ssh root@192.168.1.148 /opt/tomcat8/bin/shutdown.sh
                   
