@@ -21,6 +21,12 @@ pipeline{
             
             }
         }
+         stage("transfer-Dockerfile"){
+            steps{
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'docker', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '/var/lib/jenkins/workspace/test/', sourceFiles: '/var/lib/jenkins/workspace/test/Dockerfile')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            
+            }
+        }
         stage("build docker"){
             steps{
                sshagent(['docker']) {
