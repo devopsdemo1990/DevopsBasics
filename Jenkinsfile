@@ -17,14 +17,15 @@ pipeline{
         }
         stage("deploy-dev"){
             steps{
-                sshagent(['docker']){
-                sh """
-                   scp -o StrictHostKeyChecking=no var/lib/jenkins/workspace/test/webapp/target/webapp.war root@192.168.1.148:/opt/tomcat8/webapps
-                  
-                   ssh root@192.168.1.148 /opt/tomcat8/bin/shutdown.sh
-                  
-                   ssh root@192.168.1.148 /opt/tomcat8/bin/startup.sh 
-                """
+               sshagent(['tomcat']) {
+                   sh """ 
+                      scp -o StrictHostKeyChecking=no  target/myweb.war  ec2-user@3.20.235.106:/opt/tomcat8/webapps/
+
+                      ssh ec2-user@3.20.235.106 /opt/tomcat8/bin/shutdown.sh
+        
+                      ssh ec2-user@3.20.235.106 /opt/tomcat8/bin/shutdown.sh
+    
+                   """
                 }
             
             }
