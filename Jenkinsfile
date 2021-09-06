@@ -21,16 +21,13 @@ pipeline{
             
             }
         }
-         stage("transfer-Dockerfile"){
-            steps{
-            sshPublisher(publishers: [sshPublisherDesc(configName: 'docker', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '/var/lib/jenkins/workspace/test/', sourceFiles: '/var/lib/jenkins/workspace/test/Dockerfile')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-            
-            }
-        }
+     
         stage("build docker"){
             steps{
                sshagent(['docker']) {
                  sh ''' 
+                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  ec2-user@3.20.235.106:/home/ec2-user
+                    
                     ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker build . -t firstapp:v1 
 
                     ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker run --name firstcontainer -p 8585:8585 firstapp:v1
