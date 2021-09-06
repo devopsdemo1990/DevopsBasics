@@ -26,7 +26,7 @@ pipeline{
             steps{
                sshagent(['docker']) {
                  sh ''' 
-                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  ec2-user@3.20.235.106:/home/ec2-user
+                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  ec2-user@18.224.229.64:/home/ec2-user
                     
                     ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker build . -t firstapp:v1 
 
