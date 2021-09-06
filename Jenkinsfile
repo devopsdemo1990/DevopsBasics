@@ -17,16 +17,7 @@ pipeline{
         }
         stage("deploy-dev"){
             steps{
-               sshagent(['tomcat']) {
-                   sh """ 
-                      scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/webapp/target/webapp.war  ec2-user@3.20.235.106:/opt/tomcat8/webapps/
-
-                      ssh ec2-user@3.20.235.106 /opt/tomcat8/bin/shutdown.sh
-        
-                      ssh ec2-user@3.20.235.106 /opt/tomcat8/bin/shutdown.sh
-    
-                   """
-                }
+              sshPublisher(publishers: [sshPublisherDesc(configName: 'docker', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'webapp/target/', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             
             }
         }
