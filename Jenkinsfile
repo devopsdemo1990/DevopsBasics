@@ -23,11 +23,11 @@ pipeline{
         }
         stage("build docker"){
             steps{
-               sshagent(['tomcat']) {
+               sshagent(['docker']) {
                  sh ''' 
-                        docker build . -t firstapp:v1 
+                    ssh ec2-user@18.224.229.64  docker build . -t firstapp:v1 
 
-                        docker run --name firstcontainer -p 8585:8585 firstapp:v1
+                     ssh ec2-user@18.224.229.64  docker run --name firstcontainer -p 8585:8585 firstapp:v1
                     '''             
                }
 
