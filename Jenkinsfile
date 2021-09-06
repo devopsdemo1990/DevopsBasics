@@ -30,7 +30,7 @@ pipeline{
                     
                     ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker build . -t firstapp:v1 
 
-                    ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker run --name firstcontainer -p 8585:8585 firstapp:v1
+                    ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker run -d --name firstcontainer -p 8080:8080 firstapp:v1
                     '''             
                }
 
