@@ -15,11 +15,24 @@ pipeline{
                 sh "mvn clean package"
             }
         }
-        stage("deploy-dev"){
+        stage("transfer-war"){
             steps{
               sshPublisher(publishers: [sshPublisherDesc(configName: 'docker', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'webapp/target/', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             
             }
+        }
+        stage("build docker"){
+            steps{
+               sshagent(['tomcat']) {
+                 sh ''' 
+                        docker build . -t firstapp:v1 
+
+                        docker run --name firstcontainer -p 8585:8585 firstapp:v1
+                    '''             
+               }
+
+            }
+            
         }
     }
 }
