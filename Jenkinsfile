@@ -25,7 +25,7 @@ pipeline{
      
         stage("build docker"){
             steps{
-               sshagent(['docker']) {
+               sshagent(['docker-root']) {
                  sh ''' 
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  root@18.224.229.64:/root
 
