@@ -27,6 +27,8 @@ pipeline{
             steps{
                sshagent(['docker-root']) {
                  sh ''' 
+                    scp -o StrictHostKeyChecking=no  root@18.224.229.64:/home/ec2-user/webapp.war  root@18.224.229.64:/root
+                    
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  root@18.224.229.64:/root
 
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/pods.yml  root@18.224.229.64:/root
