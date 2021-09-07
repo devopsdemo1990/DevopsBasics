@@ -18,14 +18,16 @@ pipeline{
         }
         stage("transfer-war"){
             steps{
-              sshPublisher(publishers: [sshPublisherDesc(configName: 'root', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'webapp/target/', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)]) }
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'root', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'webapp/target/', sourceFiles: 'webapp/target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+
+            
+            }
         }
      
         stage("build docker"){
             steps{
-               sshagent(['docker-root']) {
+               sshagent(['docker']) {
                  sh ''' 
-                    
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  root@18.224.229.64:/root
 
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/pods.yml  root@18.224.229.64:/root
@@ -34,14 +36,30 @@ pipeline{
                    
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t firstapp:$DOCKER_TAG 
                     
-                '''
-                 withCredentials([string(credentialsId: 'password', variable: 'Dockerpass')]) {
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker run -d --name firstcontainer -p 8080:8080 firstapp:$DOCKER_TAG
+                
+                '''      
+                withCredentials([string(credentialsId: 'password', variable: 'Dockerpass')]) {
                      
-                   sh " docker  login -u davdocker --password-stdin ${Dockerpass}"
-                   sh " docker push firstapp:$DOCKER_TAG "
+                  sh " docker  login -u davdocker --password-stdin ${Dockerpass}"
+                  sh " docker push firstapp:$DOCKER_TAG "
                  
-                   }  
-               }
+                         }              
+                }                  
+
+            }
+            
+        }
+        
+        stage("Push docker"){
+            steps{
+               sshagent(['docker']) { 
+                  withCredentials([string(credentialsId: 'password', variable: 'Dockerpass')]) {                    
+                  sh " docker  login -u davdocker --password-stdin ${Dockerpass}"
+                  sh " docker push firstapp:$DOCKER_TAG "
+                 
+                    }              
+                }                  
 
             }
             
