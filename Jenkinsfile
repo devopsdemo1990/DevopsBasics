@@ -4,6 +4,7 @@ pipeline{
     environment{
         PATH = "/opt/maven/bin:$PATH"
         DOCKER_TAG = getDockerTag()
+        PASS = "Kamala_23"
     }
     stages{
         stage("Git checkput"){
@@ -34,7 +35,9 @@ pipeline{
 
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/services.yml  root@18.224.229.64:/root
                    
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t firstapp:$DOCKER_TAG 
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t firstapp:$DOCKER_TAG
+                    
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker login -u davsdocker -p $PASS
                     
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker push firstapp:$DOCKER_TAG
                 
