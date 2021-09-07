@@ -37,7 +37,7 @@ pipeline{
                 '''
                  withCredentials([string(credentialsId: 'password', variable: 'Dockerpass')]) {
                      
-                   sh " docker  login -u davdocker -p ${Dockerpass} "
+                   sh " docker  login -u davdocker --password-stdin ${Dockerpass}"
                    sh " docker push firstapp:$DOCKER_TAG "
                  
                    }  
