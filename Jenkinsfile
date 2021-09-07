@@ -34,7 +34,13 @@ pipeline{
                    
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t firstapp:$DOCKER_TAG 
                     
-                    '''             
+                '''
+                 withCredentials([string(credentialsId: 'password', variable: 'Dockerpass')]) {
+                     
+                   sh " docker  login -u davdocker -p ${Dockerpass} "
+                   sh " docker push firstapp:$DOCKER_TAG "
+                 
+                   }  
                }
 
             }
