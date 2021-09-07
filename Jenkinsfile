@@ -36,23 +36,9 @@ pipeline{
                    
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t firstapp:$DOCKER_TAG 
                     
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker run -d --name firstcontainer -p 8080:8080 firstapp:$DOCKER_TAG
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker push firstapp:$DOCKER_TAG
                 
                 '''                  
-                }                  
-
-            }
-            
-        }
-        
-        stage("Push docker"){
-            steps{
-               sshagent(['docker']) { 
-                  withCredentials([string(credentialsId: 'password', variable: 'Dockerpass')]) {                    
-                  sh " docker  login -u davdocker --password-stdin ${Dockerpass}"
-                  sh " docker push firstapp:$DOCKER_TAG "
-                 
-                    }              
                 }                  
 
             }
