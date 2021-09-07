@@ -3,6 +3,7 @@ pipeline{
     agent any
     environment{
         PATH = "/opt/maven/bin:$PATH"
+        DOCKER_TAG = getDockerTag()
     }
     stages{
         stage("Git checkput"){
@@ -26,11 +27,15 @@ pipeline{
             steps{
                sshagent(['docker']) {
                  sh ''' 
-                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  ec2-user@18.224.229.64:/home/ec2-user
-                    
-                    ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker build . -t firstapp:v1 
+                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  root@18.224.229.64:/root
 
-                    ssh -o StrictHostKeyChecking=no ec2-user@18.224.229.64  sudo docker run -d --name firstcontainer -p 8080:8080 firstapp:v1
+                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/pods.yml  root@18.224.229.64:/root
+
+                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/services.yml  root@18.224.229.64:/root
+                   
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t firstapp:$DOCKER_TAG 
+                    
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker run -d --name firstcontainer -p 8080:8080 firstapp:$DOCKER_TAG
                     '''             
                }
 
@@ -38,4 +43,8 @@ pipeline{
             
         }
     }
+}
+def getDockerTag(){
+    def tag = sh script:'git rev-parse HEAD', returnStdout: true
+    return tag
 }
