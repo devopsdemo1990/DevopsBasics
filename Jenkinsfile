@@ -62,9 +62,9 @@ pipeline{
                 '''                  
                 script{
                     try{
-                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo kubectl apply -f ."
+                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f ."
                     }catch(error){
-                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo kubectl create -f ."
+                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl create -f ."
                     }
                 }
 
