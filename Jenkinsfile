@@ -4,7 +4,6 @@ pipeline{
     environment{
         PATH = "/opt/maven/bin:$PATH"
         DOCKER_TAG = getDockerTag()
-        PASS = "Kamala_23"
     }
     stages{
         stage("Git checkput"){
@@ -58,18 +57,10 @@ pipeline{
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo ./rename.sh ${Docker_TAG}
 
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo rm -rf pods.yml
-                
-                '''                  
-                script{
-                    try{
-                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f ."
-                    }catch(error){
-                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl create -f ."
-                    }
-                }
 
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f .               
+                  '''                  
                 }                  
-
             }
             
         }
