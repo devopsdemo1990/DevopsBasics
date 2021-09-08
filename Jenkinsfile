@@ -58,8 +58,7 @@ pipeline{
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo ./rename.sh ${Docker_TAG}
 
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo rm -rf pods.yml
-
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f .               
+               
                   '''                  
                 }                  
             }
