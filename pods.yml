@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nodeapp
+  name: firstapp
   labels:
-    app: nodeapp
+    app: firstapp
 spec:
   containers:
-    - name: nodeapp
+    - name: firstapp
       image: davsdocker/firstapp:$DOCKER_TAG
       ports:
-        - containerPort: 8080
+        - containerPort: 9090
