@@ -67,7 +67,8 @@ pipeline{
         stage("k8s"){
             steps{
                 sshagent(['docker']) {
-                 sh "ssh root@18.224.229.64  kubectl apply -f . "               
+                    sh "ssh root@18.224.229.64  root@18.224.229.64:kubectl apply -f . "                
+              
             }            
         }
       }
