@@ -4,7 +4,7 @@ pipeline{
     environment{
         PATH = "/opt/maven/bin:$PATH"
         DOCKER_TAG = getDockerTag()
-        PASS ="Kamala_23"
+        PASS = "Kamala_23"
     }
     stages{
         stage("Git checkput"){
@@ -62,6 +62,13 @@ pipeline{
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f .               
                   '''                  
                 }                  
+            }
+            
+        }
+        stage("k8s"){
+            steps{
+                sshagent(['docker']) {
+                 sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f . "                
             }
             
         }
