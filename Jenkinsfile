@@ -4,7 +4,6 @@ pipeline{
     environment{
         PATH = "/opt/maven/bin:$PATH"
         DOCKER_TAG = getDockerTag()
-        PASS = "Kamala_23"
     }
     stages{
         stage("Git checkput"){
@@ -30,18 +29,44 @@ pipeline{
                sshagent(['docker']) {
                  sh ''' 
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/Dockerfile  root@18.224.229.64:/root
-
+                    
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/pods.yml  root@18.224.229.64:/root
-
+                    
                     scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/services.yml  root@18.224.229.64:/root
                    
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker build . -t davsdocker/firstapp:$DOCKER_TAG
                     
                     ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker login -u davsdocker -p $PASS
                     
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker push davsdocker/firstapp:$DOCKER_TAG
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo docker push davsdocker/firstapp:$DOCKER_TAG 
                 
                 '''                  
+                }                  
+
+            }
+            
+        }
+        stage("deploy to k8s"){
+            steps{
+                sshagent(['docker']) {
+                 sh ''' 
+                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/rename.sh  root@18.224.229.64:/root
+                    
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo chmod +x rename.sh
+
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo ./rename.sh ${Docker_TAG}
+
+                    ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo rm -rf pods.yml
+                
+                '''                  
+                script{
+                    try{
+                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo kubctl apply -f ."
+                    }catch(error){
+                        sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  sudo kubctl create -f ."
+                    }
+                }
+
                 }                  
 
             }
