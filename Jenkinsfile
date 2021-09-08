@@ -4,6 +4,7 @@ pipeline{
     environment{
         PATH = "/opt/maven/bin:$PATH"
         DOCKER_TAG = getDockerTag()
+        PASS = "Kamala_23"
     }
     stages{
         stage("Git checkput"){
