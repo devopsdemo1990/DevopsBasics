@@ -67,7 +67,7 @@ pipeline{
         stage("k8s"){
             steps{
                 sshagent(['docker']) {
-                 sh "ssh -o StrictHostKeyChecking=no root@18.224.229.64  kubectl apply -f . "                
+                 sh "kubectl apply -f . "                
             }            
         }
       }
