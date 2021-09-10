@@ -26,4 +26,4 @@
         image: "davsdocker/firstapp:{{DOCKER_TAG}}"
         state: started
         published_ports:
-          - 0.0.0.0:9090:9090
+          - 18.224.229.64:9090:9090
