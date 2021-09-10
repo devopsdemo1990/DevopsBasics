@@ -47,31 +47,12 @@ pipeline{
             }
             
         }
-        stage("deploy to k8s"){
-            steps{
-                sshagent(['docker']) {
-                 sh ''' 
-                    scp -o StrictHostKeyChecking=no  /var/lib/jenkins/workspace/test/rename.sh  root@18.224.229.64:/root
-                    
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo chmod +x rename.sh
-
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo ./rename.sh ${Docker_TAG}
-
-                    ssh -o StrictHostKeyChecking=no root@18.224.229.64 sudo rm -rf pods.yml
-               
-                  '''                  
-                }                  
-            }
-            
+        stage("ansible deploy"){
+           steps{
+            ansiblePlaybook credentialsId: 'docker-root', disableHostKeyChecking: true, extras: "-e DOCKER_TAG=${DOCKER_TAG}", installation: 'ansible', inventory: 'dev.inv', playbook: 'ansible-jenkins.yml'         
+           }
+           
         }
-        stage("k8s"){
-            steps{
-                sshagent(['docker']) {
-                    sh "ssh root@18.224.229.64  kubectl apply -f ./app-pods.yml ./services.yml "                
-              
-            }            
-        }
-      }
     }
 }
 def getDockerTag(){
